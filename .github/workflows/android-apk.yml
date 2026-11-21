@@ -28,6 +28,9 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;$NDK_VERSION" >/dev/null
           echo "NDK_PATH=$ANDROID_HOME/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
 
+      - name: Install build prerequisites (per libbaresip-android README)
+        run: sudo apt-get update && sudo apt-get install -y wget cmake make libtool m4 automake pkg-config unzip
+
       - name: Build native libs - download sources (openssl, opus, amr, ...)
         run: |
           cd libbaresip-android
