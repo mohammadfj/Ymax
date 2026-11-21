@@ -1,0 +1,30 @@
+name: Signing key setup
+
+# One-off: generates the Ymax release keystore and uploads it as an artifact.
+# After downloading, store as repo secrets:
+#   ANDROID_KEYSTORE (base64), ANDROID_KEYSTORE_PASSWORD, ANDROID_KEYSTORE_KEY_ALIAS, ANDROID_KEYSTORE_KEY_PASSWORD
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate keystore
+        run: |
+          keytool -genkeypair -v -keystore ymax-release.jks -alias ymax \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$STORE_PASS" -keypass "$KEY_PASS" \
+            -dname "CN=Ymax, OU=Ymax, O=Ymax, L=Lab, S=Lab, C=IR"
+          base64 -w0 ymax-release.jks > ymax-release.jks.b64
+          sha256sum ymax-release.jks
+        env:
+          STORE_PASS: YmaxLab-Store-2026
+          KEY_PASS: YmaxLab-Key-2026
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ymax-release-keystore
+          path: |
+            ymax-release.jks
+            ymax-release.jks.b64

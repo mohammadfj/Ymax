@@ -28,6 +28,23 @@ configure<ApplicationExtension> {
         }
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        create("ymax") {
+            val ksPath = System.getenv("ANDROID_KEYSTORE_PATH") ?: ""
+            if (ksPath.isNotEmpty()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEYSTORE_KEY_ALIAS") ?: "ymax"
+                keyPassword = System.getenv("ANDROID_KEYSTORE_KEY_PASSWORD")
+                @Suppress("UnstableApiUsage")
+                enableV1Signing = true
+                @Suppress("UnstableApiUsage")
+                enableV2Signing = true
+                @Suppress("UnstableApiUsage")
+                enableV3Signing = true
+            }
+        }
+    }
     buildTypes {
         debug {
             ndk { abiFilters.add("x86_64") }
@@ -39,6 +56,8 @@ configure<ApplicationExtension> {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            val ksPath = System.getenv("ANDROID_KEYSTORE_PATH") ?: ""
+            if (ksPath.isNotEmpty()) signingConfig = signingConfigs.getByName("ymax")
         }
     }
     buildFeatures {

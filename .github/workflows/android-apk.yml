@@ -53,7 +53,23 @@ jobs:
         with:
           gradle-version: "9.8.0"
 
+      - name: Prepare signing keystore
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > android/baresip-studio/ymax-release.jks
+            echo "ANDROID_KEYSTORE_PATH=$GITHUB_WORKSPACE/android/baresip-studio/ymax-release.jks" >> "$GITHUB_ENV"
+            echo "keystore ready"
+          else
+            echo "no keystore secret - release will be unsigned"
+          fi
+
       - name: Build APKs (debug + release)
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEYSTORE_KEY_ALIAS: ${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}
+          ANDROID_KEYSTORE_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}
         run: |
           cd android/baresip-studio
           gradle assembleDebug assembleRelease --no-daemon
@@ -84,7 +100,7 @@ jobs:
           name: ymax-android-apks
           path: apks
 
-      - name: Boot emulator, install and launch app
+      - name: Boot emulator, install, login and launch app
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -97,6 +113,25 @@ jobs:
             echo "installing: $APK"
             adb install -r "$APK"
             adb shell monkey -p com.tutpro.baresip -c android.intent.category.LAUNCHER 1
-            sleep 25
+            sleep 8
+            adb exec-out screencap -p > login-screen.png || true
+            SIZE=$(adb shell wm size | grep -oE '[0-9]+x[0-9]+' | tail -1)
+            W=${SIZE%x*}; H=${SIZE#*x}
+            adb shell input tap $((W/2)) $((H*28/100))
+            sleep 1; adb shell input text "operator1"; sleep 1
+            adb shell input tap $((W/2)) $((H*34/100))
+            sleep 1; adb shell input text "ymax1000"; sleep 1
+            adb shell input tap $((W/2)) $((H*42/100))
+            sleep 12
+            adb exec-out screencap -p > after-login.png || true
             if adb shell pidof com.tutpro.baresip; then echo "APP PROCESS ALIVE"; else echo "APP PROCESS DEAD"; fi
-            adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime.*Error" | head -10 || echo "no fatal exceptions"
+            adb shell run-as com.tutpro.baresip cat files/accounts || echo "(accounts file not readable)"
+            adb logcat -d | grep -E "FATAL EXCEPTION" | head -5 || echo "no fatal exceptions"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ymax-smoke-screenshots
+          path: |
+            login-screen.png
+            after-login.png
