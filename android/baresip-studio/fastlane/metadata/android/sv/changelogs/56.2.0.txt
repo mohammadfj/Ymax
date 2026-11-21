@@ -1,0 +1,4 @@
+- Lade till separata jitterbuffertfördröjningar för ljud och video
+- Visar saknade uppgifter på samtalsskärmen när paket, paketförlust eller jitter inte kan mätas
+- Uppströmsrättning som tillåter escapade tecken i kontots användardel
+- Nya tjeckiska översättningar

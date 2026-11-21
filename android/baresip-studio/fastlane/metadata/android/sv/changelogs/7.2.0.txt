@@ -1,0 +1,2 @@
+- Lade till konfigurationsvariabeln Listen Address för att ange en IP-adress
+(eller alla adresser) och den port där baresip lyssnar efter SIP-begäranden.
