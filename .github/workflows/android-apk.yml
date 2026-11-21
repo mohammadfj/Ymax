@@ -48,11 +48,15 @@ jobs:
           done
           find ../baresip-studio/distribution -name '*.a' | wc -l
 
+      - name: Setup Gradle (wrapper jar not committed upstream)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.8.0"
+
       - name: Build APKs (debug + release)
         run: |
           cd android/baresip-studio
-          chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug assembleRelease
+          gradle assembleDebug assembleRelease --no-daemon
 
       - name: Verify APKs
         run: |

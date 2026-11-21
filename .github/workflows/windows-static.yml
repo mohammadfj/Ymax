@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           ls re/cmake/
-          RE_LIB=$(ls re/build/re.lib re/build/libre.lib re/build/libre.a 2>/dev/null | head -1)
+          RE_LIB=$(find re/build -maxdepth 2 \( -name '*.lib' -o -name '*.a' \) 2>/dev/null | head -1)
           if [ -z "$RE_LIB" ]; then echo "static re lib not found:"; ls re/build; exit 1; fi
           echo "RE_LIB_ABS=$GITHUB_WORKSPACE/$RE_LIB" >> "$GITHUB_ENV"
           echo "RE_INC_ABS=$GITHUB_WORKSPACE/re/include" >> "$GITHUB_ENV"
