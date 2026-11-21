@@ -1,0 +1,50 @@
+name: iOS libraries (simulator)
+
+# Library-stage build for iOS Simulator (arm64 + x86_64), no TLS.
+# baresip has no official iOS app yet - toolchain validation only.
+# Paused per PO decision (2026-11-21); trigger manually when wanted.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-simulator:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone libre (main)
+        run: git clone --depth 1 https://github.com/baresip/re.git
+
+      - name: Build libre (iOS simulator, no TLS)
+        run: |
+          cmake -S re -B re/build -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=iphonesimulator \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=ON
+          cmake --build re/build -j
+
+      - name: Build baresip static (iOS simulator)
+        working-directory: core/baresip
+        run: |
+          cmake -B ../build-ios -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 \
+            -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=iphonesimulator \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=ON \
+            -DRE_LIBRARY="$GITHUB_WORKSPACE/re/build/libre.a" \
+            -DRE_INCLUDE_DIR="$GITHUB_WORKSPACE/re/include" \
+            -Dre_DIR="$GITHUB_WORKSPACE/re/cmake" \
+            -DMODULES="g711;l16;auconv;auresamp;aufile;ice;srtp"
+          cmake --build ../build-ios -j
+
+      - name: Package
+        run: |
+          mkdir -p stage
+          find build-ios re/build -name "*.a" -not -path "*CMakeFiles*" -exec cp {} stage/ \;
+          tar -czf ymax-ios-sim-libs.tar.gz -C stage .
+          ls -lh ymax-ios-sim-libs.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ymax-ios-sim-libs
+          path: ymax-ios-sim-libs.tar.gz

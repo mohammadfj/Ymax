@@ -1,0 +1,59 @@
+name: Desktop build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+env:
+  MODULES: "g711;l16;auconv;auresamp;ausine;aufile;mixausrc;ice;srtp;dtls_srtp;selfview;vidinfo;fakevideo"
+
+jobs:
+  unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libssl-dev
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install openssl pkg-config ninja
+          echo "OPENSSL_ROOT_DIR=$(brew --prefix openssl)" >> "$GITHUB_ENV"
+
+      - name: Clone libre (main)
+        run: git clone --depth 1 https://github.com/baresip/re.git
+
+      - name: Build libre
+        run: |
+          cmake -S re -B re/build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build re/build -j
+
+      - name: Build baresip (static, minimal modules)
+        working-directory: core/baresip
+        run: |
+          cmake -B ../build-static -G Ninja -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DMODULES="$MODULES"
+          cmake --build ../build-static -j
+
+      - name: Package
+        run: |
+          mkdir -p stage/bin
+          find build-static -maxdepth 2 -type f \( -name baresip -o -name baresip.exe \) -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
+          cp core/baresip/LICENSE stage/ 2>/dev/null || true
+          tar -czf "ymax-desktop-${{ matrix.os }}.tar.gz" -C stage .
+          ls -lh ymax-desktop-*.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ymax-desktop-${{ matrix.os }}
+          path: ymax-desktop-*.tar.gz
