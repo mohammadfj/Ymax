@@ -1,0 +1,52 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+env:
+  NDK_VERSION: 30.0.16248370
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install NDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;$NDK_VERSION" >/dev/null
+          echo "NDK_PATH=$ANDROID_HOME/ndk/$NDK_VERSION" >> "$GITHUB_ENV"
+
+      - name: Build native libs - download sources (openssl, opus, amr, ...)
+        run: |
+          cd libbaresip-android
+          make download-sources
+
+      - name: Build native libs (arm64-v8a, armeabi-v7a, x86_64)
+        run: |
+          cd libbaresip-android
+          for arch in arm64-v8a armeabi-v7a x86_64; do
+            make libbaresip ANDROID_TARGET_ARCH="$arch" NDK_PATH="$NDK_PATH" OUTPUT_DIR="$GITHUB_WORKSPACE/distribution"
+          done
+          find "$GITHUB_WORKSPACE/distribution" -name "*.a" | sort
+
+      - name: Build APKs (debug + release)
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug assembleRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baresip-studio-apks
+          path: app/build/outputs/apk/**/*.apk
