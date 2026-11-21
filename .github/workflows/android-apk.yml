@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Install build prerequisites
         run: sudo apt-get update && sudo apt-get install -y wget cmake make libtool m4 automake pkg-config unzip
@@ -73,3 +73,27 @@ jobs:
         with:
           name: ymax-android-apks
           path: android/baresip-studio/app/build/outputs/apk/**/*.apk
+
+  smoke:
+    needs: apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ymax-android-apks
+          path: apks
+
+      - name: Boot emulator, install and launch app
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          script: |
+            APK=$(find apks -name '*debug*.apk' | head -1)
+            echo "installing: $APK"
+            adb install -r "$APK"
+            adb shell monkey -p com.tutpro.baresip -c android.intent.category.LAUNCHER 1
+            sleep 25
+            if adb shell pidof com.tutpro.baresip; then echo "APP PROCESS ALIVE"; else echo "APP PROCESS DEAD"; fi
+            adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime.*Error" | head -10 || echo "no fatal exceptions"
