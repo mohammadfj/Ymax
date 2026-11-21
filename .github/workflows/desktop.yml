@@ -42,7 +42,10 @@ jobs:
       - name: Build baresip (static, minimal modules)
         working-directory: core/baresip
         run: |
-          cmake -B ../build-static -G Ninja -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DMODULES="$MODULES"
+          cmake -B ../build-static -G Ninja -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DMODULES="$MODULES" \
+            -DRE_LIBRARY="$GITHUB_WORKSPACE/re/build/libre.a" \
+            -DRE_INCLUDE_DIR="$GITHUB_WORKSPACE/re/include" \
+            -Dre_DIR="$GITHUB_WORKSPACE/re/cmake"
           cmake --build ../build-static -j
 
       - name: Package

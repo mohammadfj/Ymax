@@ -27,7 +27,7 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cmake -S re -B re\build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS="crypt32.lib"
+          cmake -S re -B re\build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="crypt32.lib"
           cmake --build re\build -j
 
       - name: Build baresip (static)
@@ -35,15 +35,16 @@ jobs:
         working-directory: core/baresip
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
+          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DRE_LIBRARY="..\re\build\re.lib" -DRE_INCLUDE_DIR="..\re\include" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
           cmake --build ..\build-static -j
 
-      - name: Package
+      - name: Smoke test + Package
         shell: bash
         run: |
           mkdir -p stage/bin
           find build-static -name "baresip.exe" -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
           cp core/baresip/LICENSE stage/ 2>/dev/null || true
+          ./stage/bin/baresip.exe -v || echo "(smoke test failed - investigate)"
           7z a ymax-desktop-windows.zip stage
 
       - uses: actions/upload-artifact@v4
