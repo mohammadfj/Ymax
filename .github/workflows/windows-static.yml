@@ -30,12 +30,18 @@ jobs:
           cmake -S re -B re\build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="crypt32.lib"
           cmake --build re\build -j
 
+      - name: Export absolute re_DIR + verify config file
+        shell: bash
+        run: |
+          ls re/cmake/
+          echo "RE_DIR_ABS=$GITHUB_WORKSPACE/re/cmake" >> "$GITHUB_ENV"
+
       - name: Build baresip (static)
         shell: cmd
         working-directory: core/baresip
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DRE_LIBRARY="..\re\build\re.lib" -DRE_INCLUDE_DIR="..\re\include" -Dre_DIR="..\re\cmake" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
+          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DRE_LIBRARY="..\re\build\re.lib" -DRE_INCLUDE_DIR="..\re\include" -Dre_DIR="%RE_DIR_ABS%" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
           cmake --build ..\build-static -j
 
       - name: Smoke test + Package
