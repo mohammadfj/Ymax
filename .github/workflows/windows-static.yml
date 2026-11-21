@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p stage/bin
-          find build-static -name "baresip.exe" -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
+          find core/build-static -name "baresip.exe" -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
           cp core/baresip/LICENSE stage/ 2>/dev/null || true
           ./stage/bin/baresip.exe -v || echo "(smoke test failed - investigate)"
           7z a ymax-desktop-windows.zip stage

@@ -51,7 +51,7 @@ jobs:
       - name: Package
         run: |
           mkdir -p stage/bin
-          find build-static -maxdepth 2 -type f \( -name baresip -o -name baresip.exe \) -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
+          find core/build-static -maxdepth 2 -type f \( -name baresip -o -name baresip.exe \) -not -path "*CMakeFiles*" -exec cp {} stage/bin/ \;
           cp core/baresip/LICENSE stage/ 2>/dev/null || true
           tar -czf "ymax-desktop-${{ matrix.os }}.tar.gz" -C stage .
           ls -lh ymax-desktop-*.tar.gz
