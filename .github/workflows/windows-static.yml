@@ -30,10 +30,14 @@ jobs:
           cmake -S re -B re\build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_SHARED_LINKER_FLAGS="crypt32.lib"
           cmake --build re\build -j
 
-      - name: Export absolute re_DIR + verify config file
+      - name: Export absolute RE paths
         shell: bash
         run: |
           ls re/cmake/
+          RE_LIB=$(ls re/build/re.lib re/build/libre.lib re/build/libre.a 2>/dev/null | head -1)
+          if [ -z "$RE_LIB" ]; then echo "static re lib not found:"; ls re/build; exit 1; fi
+          echo "RE_LIB_ABS=$GITHUB_WORKSPACE/$RE_LIB" >> "$GITHUB_ENV"
+          echo "RE_INC_ABS=$GITHUB_WORKSPACE/re/include" >> "$GITHUB_ENV"
           echo "RE_DIR_ABS=$GITHUB_WORKSPACE/re/cmake" >> "$GITHUB_ENV"
 
       - name: Build baresip (static)
@@ -41,7 +45,7 @@ jobs:
         working-directory: core/baresip
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DRE_LIBRARY="..\re\build\re.lib" -DRE_INCLUDE_DIR="..\re\include" -Dre_DIR="%RE_DIR_ABS%" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
+          cmake -B ..\build-static -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DSTATIC=1 -DOPENSSL_USE_STATIC_LIBS=TRUE -DCMAKE_EXE_LINKER_FLAGS="crypt32.lib" -DRE_LIBRARY="%RE_LIB_ABS%" -DRE_INCLUDE_DIR="%RE_INC_ABS%" -Dre_DIR="%RE_DIR_ABS%" -DMODULES="g711;l16;auconv;auresamp;aufile;mixausrc;ice;srtp;dtls_srtp"
           cmake --build ..\build-static -j
 
       - name: Smoke test + Package
