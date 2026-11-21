@@ -13,8 +13,8 @@
 ## Next
 - [ ] Phone field test: install APK, register 1001-1010, calls + chat between devices
 - [ ] Release APK signing key (PO decision) → signed release builds
-- [ ] Web service integration: provision SIP accounts from the Ymax web panel (Express API)
-- [ ] Click-to-call widget: deploy `webcall/` behind `wss://` with domain cert + server TURN
+- [ ] Web service integration: provision SIP accounts via the existing callcenter-web v2.0.3 REST/JWT API (production discovery: widget.js + operator web panel already live on call.ymax.ir — the Android client is the mobile complement, not a replacement)
+- [ ] Production connectivity for the app: production PBX is WSS-only (no UDP SIP) — decide TLS/WSS transport for the Android client with PO
 - [ ] External access path: Tailscale-first; optional MikroTik UDP port-forward (PO security decision)
 - [ ] Ymax branding pass (icons, colors, Persian strings) and Persian translation
 - [ ] iOS: library build validated, app-level work postponed (PO decision)
