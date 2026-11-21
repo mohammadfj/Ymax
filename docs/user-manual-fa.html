@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>راهنمای کاربر — اپ Ymax (نسخه آزمایشگاهی)</title>
+<style>
+  body{font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9;max-width:820px;margin:0 auto;padding:24px;color:#1a1f24;background:#fafafa}
+  h1{color:#0a5c3c;border-bottom:3px solid #0a5c3c;padding-bottom:8px}
+  h2{color:#0a5c3c;margin-top:36px;border-right:4px solid #0a7d54;padding-right:10px}
+  h3{color:#222}
+  code{background:#eef2f0;border:1px solid #d5ddd8;border-radius:4px;padding:1px 6px;font-family:monospace;direction:ltr;display:inline-block}
+  table{border-collapse:collapse;width:100%;margin:14px 0;background:#fff}
+  th,td{border:1px solid #c9d2cd;padding:8px 12px;text-align:right}
+  th{background:#e6efe9;color:#0a5c3c}
+  .box{background:#eef6f1;border:1px solid #b7d6c3;border-radius:8px;padding:12px 16px;margin:12px 0}
+  .warn{background:#fdf3e7;border:1px solid #ecd0a4;border-radius:8px;padding:12px 16px;margin:12px 0}
+  ol li,ul li{margin-bottom:6px}
+  .meta{color:#666;font-size:.9em}
+  @media print{body{background:#fff}}
+</style>
+</head>
+<body>
+
+<h1>راهنمای کاربر — اپ Ymax 📱</h1>
+<p class="meta">نسخه آزمایشگاهی 94.1.13 · تاریخ: 2026-11-21 · سرور آزمایش: 192.168.250.42:15060</p>
+
+<h2>۱) معرفی</h2>
+<p>اپ <b>Ymax</b> کلاینت تماس و چت سازمانی بر پایه موتور baresip است. این نسخه برای <b>تست شبکه لوکال</b> آماده شده: اپراتورها با داخلی‌های 1001 تا 1010 از طریق شبکه WiFi داخلی با هم تماس صوتی و چت می‌کنند و بازدیدکننده‌های سایت (مشتریان شرکت‌ها) هم با یک لینک وب به داخلی‌ها وصل می‌شوند.</p>
+
+<h2>۲) پیش‌نیازها</h2>
+<ul>
+  <li>گوشی/تبلت اندروید <b>9 به بالا</b></li>
+  <li>اتصال به <b>WiFi شبکه داخلی</b> شرکت (شبکه 192.168.250.x یا 192.168.100.x)</li>
+  <li>فایل نصبی <code>Ymax-phone-debug.apk</code></li>
+  <li>برای جریان ورود وب: یک اکانت (admin یا اپراتور) روی پنل وب پروژه</li>
+</ul>
+
+<h2>۳) نصب</h2>
+<ol>
+  <li>فایل APK را به گوشی منتقل کنید (کابل، تلگرام داخلی یا دانلود از شبکه).</li>
+  <li>روی فایل بزنید؛ اگر پیام «نصب از منابع ناشناس» آمد، برای همان فایل/مرورگر مجوز دهید.</li>
+  <li>Install را بزنید. آیکون اپ با نام <b>Ymax</b> ساخته می‌شود.</li>
+</ol>
+<div class="warn">⚠️ نسخه debug برای تست است؛ نسخه release پس از تعریف کلید امضا جایگزین می‌شود.</div>
+
+<h2>۴) اولین اجرا — صفحه ورود Ymax</h2>
+<p>اپ با صفحه <b>«Ymax — ورود اپراتور»</b> بالا می‌آید که صفحه لاگین پنل وب پروژه را نشان می‌دهد:</p>
+<ol>
+  <li>با اکانت <b>admin</b> یا <b>اپراتور</b> خود وارد پنل وب شوید.</li>
+  <li>به‌محض موفقیت ورود، اپ به‌طور خودکار از صفحه وب خارج و وارد محیط اصلی اپ می‌شود (رفتار redirect).</li>
+  <li>اگر خواستید وب را رد کنید، دکمه «ورود مستقیم به برنامه (بدون وب)» را بزنید.</li>
+  <li>لینک‌های <code>ymax://</code> (برای redirect سمت وب در آینده) هم پشتیبانی می‌شوند.</li>
+</ol>
+<div class="box">🔒 گواهی self-signed سرور فقط برای دو IP داخلی پروژه پذیرفته می‌شود؛ این محدودیت آزمایشگاهی است و در نسخه نهایی با گواهی معتبر حذف می‌شود.</div>
+
+<h2>۵) تنظیم اکانت داخلی (SIP)</h2>
+<p>در اپ: <b>Accounts → +</b> و مطابق جدول تکمیل کنید:</p>
+<table>
+<tr><th>فیلد</th><th>مقدار</th></tr>
+<tr><td>Address</td><td><code>1001@192.168.250.42:15060</code> (داخلی خودت)</td></tr>
+<tr><td>Password</td><td>رمز داخلی از جدول پایین</td></tr>
+<tr><td>Transport</td><td>UDP</td></tr>
+</table>
+<h3>جدول داخلی‌های آزمایشگاه</h3>
+<table>
+<tr><th>داخلی</th><th>رمز</th><th>نقش</th></tr>
+<tr><td>1001</td><td><code>Lab-Pass-1001</code></td><td rowspan="10">اپراتورهای تست (هر گوشی یکی)</td></tr>
+<tr><td>1002</td><td><code>Lab-Pass-1002</code></td></tr>
+<tr><td>1003</td><td><code>Lab-Pass-1003</code></td></tr>
+<tr><td>1004</td><td><code>Lab-Pass-1004</code></td></tr>
+<tr><td>1005</td><td><code>Lab-Pass-1005</code></td></tr>
+<tr><td>1006</td><td><code>Lab-Pass-1006</code></td></tr>
+<tr><td>1007</td><td><code>Lab-Pass-1007</code></td></tr>
+<tr><td>1008</td><td><code>Lab-Pass-1008</code></td></tr>
+<tr><td>1009</td><td><code>Lab-Pass-1009</code></td></tr>
+<tr><td>1010</td><td><code>Lab-Pass-1010</code></td></tr>
+<tr><td>2001</td><td><code>Lab-Pass-2001</code></td><td>بازدیدکننده وب</td></tr>
+</table>
+<p>شماره‌های کمکی: <code>600</code> = تست صدا (Echo — صدای خودت را می‌شنوی) · <code>999</code> = تست پخش صدا بدون میکروفون</p>
+
+<h2>۶) تماس و چت</h2>
+<ul>
+  <li><b>تماس:</b> شماره داخلی را بگیر (مثلاً 1002). دو گوشی روی WiFi داخلی = تماس محلی کامل.</li>
+  <li><b>چت:</b> از بخش Messaging، پیام به داخلی موردنظر بفرست (پیام داخل شبکه می‌ماند).</li>
+  <li><b>تست سالم‌بودن خط:</b> بگیر <code>600</code> — اگر صدای خودت را شنیدی، مسیر صدا سالم است.</li>
+</ul>
+
+<h2>۷) کلیک-به-تماس برای شرکت مشتری (وب)</h2>
+<p>صفحه <code>webcall/index.html</code> در سایت شرکت مشتری embed می‌شود؛ بازدیدکننده با یک کلیک از مرورگر به داخلی انتخابی شما وصل می‌شود:</p>
+<ul>
+  <li>اتصال مرورگر: <code>ws://192.168.250.42:8089/ws</code> با داخلی <code>2001</code></li>
+  <li>در نسخه نهایی: <code>wss://</code> روی دامنه + TURN سرور (امن و خارج از LAN)</li>
+</ul>
+
+<h2>۸) عیب‌یابی</h2>
+<table>
+<tr><th>مشکل</th><th>راه‌حل</th></tr>
+<tr><td>اکانت رجیستر نمی‌شود</td><td>WiFi روی شبکه داخلی است؟ پورت 15060؟ رمز را از جدول چک کن؛ به admin خبر بده تا لاگ سرور را ببیند</td></tr>
+<tr><td>تماس وصل می‌شود ولی صدا نیست</td><td>مجوز میکروفون به اپ داده شده؟ تست 600 را بگیر</td></tr>
+<tr><td>هشدار گواهی نامعتبر</td><td>طبیعی است (lab)؛ فقط برای IP های داخلی قابل پذیرش است</td></tr>
+<tr><td>صفحه لاگین وب باز نمی‌شود</td><td>سرور 192.168.250.42 از WiFi داخلی قابل دسترس است؟ یا «ورود مستقیم» را بزن</td></tr>
+<tr><td>اپ در پس‌زمینه قطع می‌شود</td><td>بهینه‌سازی باتری اپ را خاموش کن (Settings → Battery → Unrestricted)</td></tr>
+</table>
+
+<h2>۹) اطلاعات فنی (ادمین)</h2>
+<table>
+<tr><th>مورد</th><th>مقدار</th></tr>
+<tr><td>سرور آزمایش</td><td>Asterisk 20.21 در کانتینر <code>baresip-lab-asterisk</code> @ 192.168.250.42</td></tr>
+<tr><td>پورت‌ها</td><td>SIP UDP 15060 · RTP UDP 22000-22100 · WS TCP 8089 — فقط روی IP داخلی و Tailscale</td></tr>
+<tr><td>سند تغییرات</td><td><code>/opt/SERVER-CHANGELOG.md</code> روی سرور</td></tr>
+<tr><td>برگشت کامل</td><td><code>cd /opt/baresip-lab && docker compose down -v && rm -rf /opt/baresip-lab</code></td></tr>
+</table>
+<div class="warn">🔒 این نسخه آزمایشگاهی است: رمزها lab-only و روی شبکه داخلی بسته شده‌اند. برای نسخه تولیدی: TLS/SRTP، دامنه معتبر، رمزهای واقعی و کلید امضای release لازم است.</div>
+
+<p class="meta">تولید‌شده توسط عامل ZCode در سشن 2026-11-21 · ریپوی پروژه: github.com/mohammadfj/Ymax</p>
+
+</body>
+</html>

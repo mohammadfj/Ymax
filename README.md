@@ -29,7 +29,17 @@ from upstream mirrors (full git history preserved via subtree merges).
 2. gradle `assembleDebug` + `assembleRelease` in `android/baresip-studio`
 3. APK verification (aapt badging, apksigner on debug) then artifact upload
 
+## Releases & docs
+
+- **Releases**: https://github.com/mohammadfj/Ymax/releases — `v0.1.0-lab` = installable debug APK + Persian user manual (see [RELEASES.md](RELEASES.md))
+- [docs/user-manual-fa.html](docs/user-manual-fa.html) — راهنمای کاربر فارسی
+- [docs/LAB-SERVER.md](docs/LAB-SERVER.md) — lab SIP server reference (extensions, ports, rollback)
+- [docs/ROADMAP.md](docs/ROADMAP.md) — what's done / in progress / next
+
+Note: upstream mirrors (`mohammadfj/baresip`, `baresip-studio`, `libbaresip-android`, `baresip-android`, `zz-wiki-test`) are **archived** — this monorepo is the single source of truth.
+
 ## Open items
 
 - Release APK signing key: not configured yet (PO decision pending)
-- SIP server: lab on Ymax server pending PO password/permission (see SERVER-CHANGELOG in voip-centos-z)
+- Web service provisioning integration + `wss://` for click-to-call
+- External (out-of-LAN) access: Tailscale-first; MikroTik UDP port-forward needs PO security decision
