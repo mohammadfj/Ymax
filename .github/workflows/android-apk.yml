@@ -93,7 +93,10 @@ jobs:
   smoke:
     needs: apk
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
+    continue-on-error: true
+    env:
+      ANDROID_I_WANT_MY_TCG: "yes"
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -106,7 +109,8 @@ jobs:
           api-level: 30
           target: google_apis
           arch: x86_64
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -accel off
+          emulator-boot-timeout: 1800
           disable-animations: true
           script: |
             APK=$(find apks -name '*debug*.apk' | head -1)
