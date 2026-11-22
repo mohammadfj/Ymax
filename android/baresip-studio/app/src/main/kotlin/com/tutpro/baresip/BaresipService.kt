@@ -2147,12 +2147,20 @@ class BaresipService: Service() {
             deleteIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
+        val stopIntent = Intent(this, BaresipService::class.java).setAction("Stop")
+        val stopPi = PendingIntent.getService(
+            this,
+            STATUS_REQ_CODE + 1,
+            stopIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
         snb.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.drawable.ic_notification_b)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.status))
             .setContentIntent(pi)
             .setDeleteIntent(dpi)
+            .addAction(0, "خاموش کردن", stopPi)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setPriority(NotificationCompat.PRIORITY_MIN)

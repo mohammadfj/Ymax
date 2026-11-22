@@ -154,7 +154,7 @@ class YmaxAuthActivity : Activity() {
     }
 
     private fun writeAccount(ext: String, pass: String) {
-        val line = "<sip:$ext@$sipServer:$sipPort>;auth_user=\"$ext\";auth_pass=\"$pass\";check_origin=no;regint=60\n"
+        val line = "<sip:$ext@$sipServer:$sipPort>;auth_user=\"$ext\";auth_pass=\"$pass\";check_origin=no;regint=60;numeric_keypad=yes\n"
         openFileOutput("accounts", Context.MODE_PRIVATE).use { it.write(line.toByteArray(Charsets.UTF_8)) }
     }
 

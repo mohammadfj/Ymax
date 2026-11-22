@@ -631,37 +631,44 @@ private fun TopAppBar(
 
             val microPhoneTitle = stringResource(R.string.microphone_title)
             val microPhoneMessage = stringResource(R.string.microphone_tip)
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .combinedClickable(
-                        onClick = {
-                            if (Call.call("connected") != null) {
-                                val newMuteState = !BaresipService.isMicMuted
-                                BaresipService.setMicMute(newMuteState)
-                                if (newMuteState)
-                                    viewModel.updateMicIcon(Icons.Filled.MicOff)
-                                else
-                                    viewModel.updateMicIcon(Icons.Filled.Mic)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .combinedClickable(
+                            onClick = {
+                                if (Call.call("connected") != null) {
+                                    val newMuteState = !BaresipService.isMicMuted
+                                    BaresipService.setMicMute(newMuteState)
+                                    if (newMuteState)
+                                        viewModel.updateMicIcon(Icons.Filled.MicOff)
+                                    else
+                                        viewModel.updateMicIcon(Icons.Filled.Mic)
+                                }
+                            },
+                            onLongClick = {
+                                alertTitle.value = microPhoneTitle
+                                alertMessage.value = microPhoneMessage
+                                showAlert.value = true
                             }
-                        },
-                        onLongClick = {
-                            alertTitle.value = microPhoneTitle
-                            alertMessage.value = microPhoneMessage
-                            showAlert.value = true
-                        }
+                        )
+                ) {
+                    Icon(
+                        imageVector = currentMicIcon,
+                        contentDescription = "بی‌صدا کردن میکروفون",
+                        tint = if (BaresipService.isMicMuted)
+                            MaterialTheme.colorScheme.error
+                        else
+                            MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(40.dp)
                     )
-            ) {
-                Icon(
-                    imageVector = currentMicIcon,
-                    contentDescription = null,
-                    tint = if (BaresipService.isMicMuted)
-                        MaterialTheme.colorScheme.error
-                    else
-                        MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(40.dp)
+                }
+                Text(
+                    text = "میکروفون",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -669,28 +676,35 @@ private fun TopAppBar(
 
             val speakerPhoneTitle = stringResource(R.string.speakerphone_title)
             val speakerPhoneMessage = stringResource(R.string.speakerphone_tip)
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .combinedClickable(
-                        onClick = { BaresipService.instance?.toggleSpeakerphone() },
-                        onLongClick = {
-                            alertTitle.value = speakerPhoneTitle
-                            alertMessage.value = speakerPhoneMessage
-                            showAlert.value = true
-                        }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .combinedClickable(
+                            onClick = { BaresipService.instance?.toggleSpeakerphone() },
+                            onLongClick = {
+                                alertTitle.value = speakerPhoneTitle
+                                alertMessage.value = speakerPhoneMessage
+                                showAlert.value = true
+                            }
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.SpeakerPhone,
+                        contentDescription = "اسپیکر",
+                        tint = if (isSpeakerOn)
+                            MaterialTheme.colorScheme.error
+                        else
+                            MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(40.dp)
                     )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.SpeakerPhone,
-                    contentDescription = null,
-                    tint = if (isSpeakerOn)
-                        MaterialTheme.colorScheme.error
-                    else
-                        MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(40.dp)
+                }
+                Text(
+                    text = "اسپیکر",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -744,20 +758,30 @@ private fun DockedToolbarItem(
     contentDescription: String,
     tint: Color,
     enabled: Boolean = true,
-    iconSize: Dp = 36.dp
+    iconSize: Dp = 36.dp,
+    label: String? = null
 ) {
     TooltipBox(
         positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
         tooltip = { PlainTooltip { Text(contentDescription) } },
         state = rememberTooltipState(),
     ) {
-        IconButton(onClick = onClick, enabled = enabled, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                modifier = Modifier.size(iconSize),
-                tint = tint
-            )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            IconButton(onClick = onClick, enabled = enabled, modifier = Modifier.size(48.dp)) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                    modifier = Modifier.size(iconSize),
+                    tint = tint
+                )
+            }
+            if (label != null)
+                Text(
+                    text = label,
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
         }
     }
 }
@@ -843,6 +867,7 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
                     icon = Icons.Filled.Voicemail,
                     contentDescription = voicemailLabel,
                     iconSize = iconSize,
+                    label = "صندوق صدا",
                     tint = if (hasNewVoicemail) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
                 )
 
@@ -854,6 +879,7 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
                 icon = Icons.Filled.Person,
                 contentDescription = contactsLabel,
                 iconSize = iconSize,
+                label = "حساب‌ها",
                 tint = MaterialTheme.colorScheme.secondary
             )
 
@@ -866,6 +892,7 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
                 icon = Icons.AutoMirrored.Filled.Chat,
                 contentDescription = chatsLabel,
                 iconSize = iconSize,
+                label = "چت",
                 tint = if (hasUnreadMessages) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
             )
 
@@ -878,6 +905,7 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
                 icon = Icons.Filled.History,
                 contentDescription = historyLabel,
                 iconSize = iconSize,
+                label = "تاریخچه",
                 tint = if (hasMissedCalls) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
             )
 
@@ -890,6 +918,7 @@ private fun BottomBar(ctx: Context, viewModel: ViewModel, navController: NavCont
                 icon = Icons.Filled.Dialpad,
                 contentDescription = dialpadLabel,
                 iconSize = iconSize,
+                label = "صفحه‌کلید",
                 tint = if (isDialpadVisible) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
             )
         }
@@ -1741,51 +1770,33 @@ private fun CallRow(
     ) {
         if (isDialer) {
             if (dialerState.showCallButton.value)
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    enabled = dialerState.callButtonsEnabled.value,
-                    onClick = {
-                        if (!dialerState.callButtonsEnabled.value) return@IconButton
-                        dialerState.showCallConferenceButton.value = false
-                        dialerState.showSuggestions.value = false
-                        callClick(ctx, viewModel, dialerState)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Call,
-                        modifier = Modifier.size(42.dp),
-                        tint = colorResource(if (dialerState.callButtonsEnabled.value)
-                            R.color.colorTrafficGreen
-                        else
-                            R.color.colorTrafficYellow),
-                        contentDescription = null,
-                    )
-                }
-            if (dialerState.showCallConferenceButton.value) {
-                if (dialerState.showCallButton.value) Spacer(modifier = Modifier.width(48.dp))
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    enabled = dialerState.callButtonsEnabled.value,
-                    onClick = {
-                        if (!dialerState.callButtonsEnabled.value) return@IconButton
-                        dialerState.showCallButton.value = false
-                        dialerState.showSuggestions.value = false
-                        callClick(ctx, viewModel, dialerState)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.AddIcCall,
-                        modifier = Modifier.size(42.dp),
-                        tint = colorResource(
-                            if (dialerState.callButtonsEnabled.value)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(
+                        modifier = Modifier.size(48.dp),
+                        enabled = dialerState.callButtonsEnabled.value,
+                        onClick = {
+                            if (!dialerState.callButtonsEnabled.value) return@IconButton
+                            dialerState.showCallConferenceButton.value = false
+                            dialerState.showSuggestions.value = false
+                            callClick(ctx, viewModel, dialerState)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Call,
+                            modifier = Modifier.size(42.dp),
+                            tint = colorResource(if (dialerState.callButtonsEnabled.value)
                                 R.color.colorTrafficGreen
                             else
-                                R.color.colorTrafficYellow
-                        ),
-                        contentDescription = null,
+                                R.color.colorTrafficYellow),
+                            contentDescription = "تماس صوتی",
+                        )
+                    }
+                    Text(
+                        text = "تماس",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-            }
         }
         else {
             if (call!!.showCancelButton.value) {
@@ -1829,66 +1840,80 @@ private fun CallRow(
             }
 
             if (call.showHangupButton.value && !call.conferenceCall)
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    onClick = {
-                        if (checkLockedAndToast(ctx)) return@IconButton
-                        if (call.callOnHold.value) {
-                            Log.d(TAG, "User requested resume for ${call.callp}")
-                            call.resume() // This now automatically holds other calls
-                        }
-                        else {
-                            Log.d(TAG, "User requested hold for ${call.callp}")
-                            call.hold()
-                        }
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.PauseCircle,
-                        modifier = Modifier.size(42.dp),
-                        tint = if (call.callOnHold.value)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.secondary,
-                        contentDescription = null,
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(
+                        modifier = Modifier.size(48.dp),
+                        onClick = {
+                            if (checkLockedAndToast(ctx)) return@IconButton
+                            if (call.callOnHold.value) {
+                                Log.d(TAG, "User requested resume for ${call.callp}")
+                                call.resume() // This now automatically holds other calls
+                            }
+                            else {
+                                Log.d(TAG, "User requested hold for ${call.callp}")
+                                call.hold()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.PauseCircle,
+                            modifier = Modifier.size(42.dp),
+                            tint = if (call.callOnHold.value)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.secondary,
+                            contentDescription = "انتظار تماس",
+                        )
+                    }
+                    Text(
+                        text = if (call.callOnHold.value) "ادامه" else "انتظار",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
             var showTransferDialog by remember { mutableStateOf(false) }
 
             if (call.showHangupButton.value && !call.conferenceCall && !call.ua.account.isMobile)
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    enabled = call.transferButtonEnabled.value,
-                    onClick = {
-                        if (checkLockedAndToast(ctx)) return@IconButton
-                        if (call.onHoldCall != null) {
-                            if (!Api.call_supported(call.callp, Api.REPLACES)) {
-                                alertTitle.value = ctx.getString(R.string.notice)
-                                alertMessage.value = ctx.getString(R.string.replaces_not_supported)
-                                showAlert.value = true
-                            }
-                            else {
-                                call.hold()
-                                if (!call.executeTransfer()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(
+                        modifier = Modifier.size(48.dp),
+                        enabled = call.transferButtonEnabled.value,
+                        onClick = {
+                            if (checkLockedAndToast(ctx)) return@IconButton
+                            if (call.onHoldCall != null) {
+                                if (!Api.call_supported(call.callp, Api.REPLACES)) {
                                     alertTitle.value = ctx.getString(R.string.notice)
-                                    alertMessage.value = ctx.getString(R.string.transfer_failed)
+                                    alertMessage.value = ctx.getString(R.string.replaces_not_supported)
                                     showAlert.value = true
                                 }
+                                else {
+                                    call.hold()
+                                    if (!call.executeTransfer()) {
+                                        alertTitle.value = ctx.getString(R.string.notice)
+                                        alertMessage.value = ctx.getString(R.string.transfer_failed)
+                                        showAlert.value = true
+                                    }
+                                }
                             }
-                        }
-                        else
-                            showTransferDialog = true
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.ArrowCircleRight,
-                        modifier = Modifier.size(42.dp),
-                        tint = if (call.callTransfer.value)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.secondary,
-                        contentDescription = null,
+                            else
+                                showTransferDialog = true
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowCircleRight,
+                            modifier = Modifier.size(42.dp),
+                            tint = if (call.callTransfer.value)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.secondary,
+                            contentDescription = "انتقال تماس",
+                        )
+                    }
+                    Text(
+                        text = "انتقال",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
