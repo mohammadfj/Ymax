@@ -47,6 +47,24 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: android-sdk-bundle
-          path: ${{ runner.temp }}/*.zip
+          name: sdk-platform-tools
+          path: ${{ runner.temp }}/platform-tools.zip
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdk-emulator
+          path: ${{ runner.temp }}/emulator.zip
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdk-cmdline-tools
+          path: ${{ runner.temp }}/cmdline-tools.zip
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdk-system-image
+          path: ${{ runner.temp }}/system-image.zip
           retention-days: 3
