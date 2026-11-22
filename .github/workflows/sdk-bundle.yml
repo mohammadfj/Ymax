@@ -33,12 +33,13 @@ jobs:
         run: |
           $sdk = $env:ANDROID_HOME
           if (-not (Test-Path $sdk)) { $sdk = "C:\Program Files (x86)\Android\android-sdk" }
+          if (-not (Test-Path $sdk)) { $sdk = "C:\Android\android-sdk" }
           Write-Host "SDK root: $sdk"
-          Compress-Archive -Path "$sdk\platform-tools" -DestinationPath "$env:RUNNER_TEMP\platform-tools.zip" -Force
-          Compress-Archive -Path "$sdk\emulator" -DestinationPath "$env:RUNNER_TEMP\emulator.zip" -Force
-          Compress-Archive -Path "$sdk\cmdline-tools" -DestinationPath "$env:RUNNER_TEMP\cmdline-tools.zip" -Force
+          tar.exe -a -cf "$env:RUNNER_TEMP\platform-tools.zip" -C $sdk platform-tools
+          tar.exe -a -cf "$env:RUNNER_TEMP\emulator.zip" -C $sdk emulator
+          tar.exe -a -cf "$env:RUNNER_TEMP\cmdline-tools.zip" -C $sdk cmdline-tools
           if (Test-Path "$sdk\system-images\android-30") {
-            Compress-Archive -Path "$sdk\system-images\android-30" -DestinationPath "$env:RUNNER_TEMP\system-image.zip" -Force
+            tar.exe -a -cf "$env:RUNNER_TEMP\system-image.zip" -C $sdk system-images
           } else {
             Write-Host "system image android-30 missing"
           }
