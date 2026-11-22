@@ -554,7 +554,7 @@
     <string name="invalid_sip_or_tel_uri">Invalid SIP or tel URI \'%1$s\'</string>
     <string name="permission_denied">Permission Denied</string>
     <string name="unlock_to_access_full_app">Please unlock the device</string>
-    <string name="baresip" translatable="false">baresip</string>
+    <string name="baresip" translatable="false">Ymax</string>
     <string name="android" translatable="false">Android</string>
     <!-- Main Activity -->
     <string name="backup">Backup</string>
@@ -563,8 +563,8 @@
     <string name="about">About</string>
     <string name="restart">Restart</string>
     <string name="quit">Quit</string>
-    <string name="outgoing_call_to_dots">Call to …</string>
-    <string name="incoming_call_from_dots">Call from …</string>
+    <string name="outgoing_call_to_dots">تماس با …</string>
+    <string name="incoming_call_from_dots">تماس از …</string>
     <string name="diverted_by_dots">Diverted by …</string>
     <string name="diverted_by">diverted by</string>
     <string name="no_telephony_provider">Account \'%1$s\' has no Telephony Provider</string>

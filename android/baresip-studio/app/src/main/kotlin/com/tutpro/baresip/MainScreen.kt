@@ -586,43 +586,50 @@ private fun TopAppBar(
 
                 val callRecordingTitle = stringResource(R.string.call_recording_title)
                 val callRecordingMessage = stringResource(R.string.call_recording_tip)
-                Box(contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .combinedClickable(
-                            onClick = {
-                                if (checkLockedAndToast(ctx)) return@combinedClickable
-                                if (Call.call("connected") == null) {
-                                    BaresipService.isRecOn = !BaresipService.isRecOn
-                                    if (BaresipService.isRecOn)
-                                        Api.module_load("sndfile")
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .combinedClickable(
+                                onClick = {
+                                    if (checkLockedAndToast(ctx)) return@combinedClickable
+                                    if (Call.call("connected") == null) {
+                                        BaresipService.isRecOn = !BaresipService.isRecOn
+                                        if (BaresipService.isRecOn)
+                                            Api.module_load("sndfile")
+                                        else
+                                            Api.module_unload("sndfile")
+                                        isRecOn = BaresipService.isRecOn
+                                    }
                                     else
-                                        Api.module_unload("sndfile")
-                                    isRecOn = BaresipService.isRecOn
+                                        Toast.makeText(
+                                            ctx,
+                                            R.string.rec_in_call,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                },
+                                onLongClick = {
+                                    alertTitle.value = callRecordingTitle
+                                    alertMessage.value = callRecordingMessage
+                                    showAlert.value = true
                                 }
-                                else
-                                    Toast.makeText(
-                                        ctx,
-                                        R.string.rec_in_call,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                            },
-                            onLongClick = {
-                                alertTitle.value = callRecordingTitle
-                                alertMessage.value = callRecordingMessage
-                                showAlert.value = true
-                            }
+                            )
+                    ) {
+                        Icon(
+                            imageVector = if (isRecOn) recOnImage else recOffImage,
+                            contentDescription = "ضبط مکالمه",
+                            tint = if (isRecOn)
+                                MaterialTheme.colorScheme.error
+                            else
+                                MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(40.dp)
                         )
-                ) {
-                    Icon(
-                        imageVector = if (isRecOn) recOnImage else recOffImage,
-                        contentDescription = null,
-                        tint = if (isRecOn)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.size(40.dp)
+                    }
+                    Text(
+                        text = "ضبط",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -708,13 +715,20 @@ private fun TopAppBar(
                 )
             }
 
-            IconButton(
-                onClick = { menuExpanded = !menuExpanded }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Menu",
-                    tint = MaterialTheme.colorScheme.secondary
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(
+                    onClick = { menuExpanded = !menuExpanded }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "منو",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                Text(
+                    text = "منو",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -1600,6 +1614,7 @@ private fun CallUriRow(
                     )
                 },
                 textStyle = TextStyle(fontSize = 18.sp),
+                readOnly = isDialer && isDialpadVisible,
                 keyboardOptions = if (isDialpadVisible)
                     KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
@@ -1717,6 +1732,23 @@ private fun CallUriRow(
                 initialDurationSeconds = call.callDuration.toLong(),
                 modifier = Modifier.padding(start = 6.dp, top = 6.dp)
             )
+
+        if (isDialer) {
+            YmaxDialpad(
+                onDigit = { digit -> dialerState.callUri.value += digit },
+                onBackspace = {
+                    if (dialerState.callUri.value.isNotEmpty())
+                        dialerState.callUri.value = dialerState.callUri.value.dropLast(1)
+                },
+                modifier = Modifier.padding(top = 10.dp)
+            )
+            YmaxExtensionDirectory(
+                onCall = { ext ->
+                    dialerState.callUri.value = ext
+                    callClick(ctx, viewModel, dialerState)
+                }
+            )
+        }
     }
 }
 
