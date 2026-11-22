@@ -1614,12 +1614,11 @@ private fun CallUriRow(
                     )
                 },
                 textStyle = TextStyle(fontSize = 18.sp),
-                readOnly = isDialer && isDialpadVisible,
                 keyboardOptions = if (isDialpadVisible)
                     KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrectEnabled = false,
-                        keyboardType = KeyboardType.Phone,
+                        keyboardType = KeyboardType.None,
                         imeAction = ImeAction.Default
                     )
                 else
