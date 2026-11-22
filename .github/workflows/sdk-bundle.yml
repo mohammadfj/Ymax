@@ -1,0 +1,51 @@
+name: SDK bundle for local testing
+
+# Packages the runner's Android SDK (Windows binaries) as artifacts so the
+# PO's Windows machine can run a local emulator without Google downloads
+# (dl.google.com is geo-blocked there).
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    steps:
+      - name: Locate SDK
+        shell: bash
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME" || ls "C:/Program Files (x86)/Android/android-sdk" || true
+
+      - name: Install missing components
+        shell: cmd
+        run: |
+          where sdkmanager || (echo "sdkmanager not on PATH - using ANDROID_HOME/cmdline-tools")
+          set SDKM=%ANDROID_HOME%\cmdline-tools\latest\bin\sdkmanager.bat
+          if not exist "%SDKM%" set SDKM=C:\Program Files (x86)\Android\android-sdk\cmdline-tools\latest\bin\sdkmanager.bat
+          echo y | "%SDKM%" --licenses > nul
+          echo y | "%SDKM%" "platform-tools" "emulator" "cmdline-tools;latest" "system-images;android-30;google_apis;x86_64" > nul
+          echo INSTALLED
+
+      - name: Zip components
+        shell: pwsh
+        run: |
+          $sdk = $env:ANDROID_HOME
+          if (-not (Test-Path $sdk)) { $sdk = "C:\Program Files (x86)\Android\android-sdk" }
+          Write-Host "SDK root: $sdk"
+          Compress-Archive -Path "$sdk\platform-tools" -DestinationPath "$env:RUNNER_TEMP\platform-tools.zip" -Force
+          Compress-Archive -Path "$sdk\emulator" -DestinationPath "$env:RUNNER_TEMP\emulator.zip" -Force
+          Compress-Archive -Path "$sdk\cmdline-tools" -DestinationPath "$env:RUNNER_TEMP\cmdline-tools.zip" -Force
+          if (Test-Path "$sdk\system-images\android-30") {
+            Compress-Archive -Path "$sdk\system-images\android-30" -DestinationPath "$env:RUNNER_TEMP\system-image.zip" -Force
+          } else {
+            Write-Host "system image android-30 missing"
+          }
+          Get-ChildItem "$env:RUNNER_TEMP\*.zip" | Select-Object Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-sdk-bundle
+          path: ${{ runner.temp }}/*.zip
+          retention-days: 3
