@@ -1529,7 +1529,7 @@ private fun CallUriRow(
         Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
             OutlinedTextField(
                 value = if (isDialer) dialerState.callUri.value else call!!.callUri.value,
-                readOnly = if (isDialer) (!dialerState.callUriEnabled.value || isDialpadVisible) else !call!!.callUriEnabled.value,
+                readOnly = false,
                 singleLine = true,
                 onValueChange = { input ->
                     if (isDialer)
