@@ -71,6 +71,14 @@ object Config {
             config = "${config}net_af $addressFamily\n"
             BaresipService.addressFamily = addressFamily
         }
+        else {
+            // Default to IPv4: baresip's native transport enumeration otherwise
+            // picks up IPv6 link-local/site-local addresses (fe80::/fec0::) that
+            // cannot be bound for SIP, which makes ua_init() fail with EINVAL
+            // (observed on the Android emulator and on dual-stack devices).
+            config = "${config}net_af ipv4\n"
+            BaresipService.addressFamily = "ipv4"
+        }
 
         val transportProtocols = previousVariable("sip_transports")
         if (transportProtocols != "") config = "${config}sip_transports $transportProtocols\n"

@@ -3264,6 +3264,10 @@ class BaresipService: Service() {
     }
 
     private fun afMatch(address: String): Boolean {
+        // Never pass IPv6 link-local/site-local addresses to baresip: it cannot
+        // bind SIP transports to them (fe80::/fec0::), which makes ua_init()
+        // fail with EINVAL. Filter them even when no address family is pinned.
+        if (address.startsWith("fe80:") || address.startsWith("fec0:")) return false
         return when (addressFamily) {
             "" -> true
             "ipv4" -> address.contains(".")
