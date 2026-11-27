@@ -143,20 +143,28 @@ class MainActivity : ComponentActivity() {
 
         when (intent?.action) {
             ACTION_DIAL, ACTION_CALL, ACTION_VIEW -> {
-                val action = if (intent?.action == ACTION_CALL) "call" else "dial"
-                if (BaresipService.isServiceRunning)
-                    callAction(
-                        this,
-                        viewModel,
-                        intent.data,
-                        action
-                    )
+                // Deep link: ymax://... opens app to home screen
+                if (intent?.data?.scheme == "ymax") {
+                    Log.d(TAG, "Deep link ymax:// opened, navigating to home")
+                    // Navigate to home after content is set; handled in NavHost LaunchedEffect
+                    BaresipService.deepLinkToHome = true
+                }
                 else {
-                    BaresipService.callActionType = action
-                    BaresipService.callActionUri = intent.data
-                        .toString().replace("%2B", "+")
-                        .replace("%20", "")
-                        .filterNot { setOf('-', ' ', '(', ')').contains(it) }
+                    val action = if (intent?.action == ACTION_CALL) "call" else "dial"
+                    if (BaresipService.isServiceRunning)
+                        callAction(
+                            this,
+                            viewModel,
+                            intent.data,
+                            action
+                        )
+                    else {
+                        BaresipService.callActionType = action
+                        BaresipService.callActionUri = intent.data
+                            .toString().replace("%2B", "+")
+                            .replace("%20", "")
+                            .filterNot { setOf('-', ' ', '(', ')').contains(it) }
+                    }
                 }
             }
         }
@@ -254,6 +262,14 @@ class MainActivity : ComponentActivity() {
                         } catch (e: IllegalArgumentException) {
                             Log.e(TAG, "Failed to navigate for command $command: ${e.message}")
                         }
+                    }
+                }
+
+                // Deep link: ymax:// opens app to home screen
+                LaunchedEffect(key1 = Unit) {
+                    if (BaresipService.deepLinkToHome) {
+                        BaresipService.deepLinkToHome = false
+                        navController.navigate("main") { popUpTo("main") { inclusive = true } }
                     }
                 }
 
@@ -365,6 +381,11 @@ class MainActivity : ComponentActivity() {
 
         when {
             isCallLogIntent(intent) -> handleCallLogIntent()
+            intent.data?.scheme == "ymax" -> {
+                // Deep link: ymax://... opens app to home screen
+                Log.d(TAG, "onNewIntent deep link ymax:// opened")
+                viewModel.navigateToHome()
+            }
             intent.action in listOf(ACTION_DIAL, ACTION_CALL, ACTION_VIEW) ->
                 callAction(
                     this,
