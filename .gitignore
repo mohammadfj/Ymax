@@ -1,0 +1,20 @@
+# secrets / credentials
+acme.json
+.env
+.env.*
+*.json
+
+# scratch scripts & data
+*.py
+*.sh
+*.sql
+*.conf
+
+# tooling / caches
+node_modules/
+.claude/
+.playwright-mcp/
+*.pyc
+__pycache__/
+*.log
+.DS_Store
