@@ -3693,6 +3693,7 @@ class BaresipService: Service() {
         var sipTrace = false
         var callActionUri = ""
         var callActionType = ""
+        var deepLinkToHome = false
         var isMainVisible = false
         var isMicMuted = false
         var isRecOn = false
