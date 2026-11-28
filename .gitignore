@@ -3,6 +3,7 @@ acme.json
 .env
 .env.*
 *.json
+!CHANGELOG*.*
 
 # scratch scripts & data
 *.py
