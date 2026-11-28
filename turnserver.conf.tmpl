@@ -1,0 +1,32 @@
+; ==== Call Center - coturn (TURN/STUN relay) ====
+; Rendered into the turn image by docker/render-config.py.
+; Placeholders: __PUBLIC_IP__ __LAN_IP__ __REALM__ __TURN_AUTH__
+;
+; __TURN_AUTH__ is a block of auth lines filled in by render-config.py:
+;   - REST API mode (TURN_SECRET set):
+;       use-auth-secret
+;       static-auth-secret=<secret>
+;     The app mints short-lived per-tenant credentials (username "<ts>:t<tid>",
+;     password HMAC-SHA1 of the user-combo over the secret); coturn validates
+;     via use-auth-secret. No per-tenant user lines, no coturn restart on
+;     tenant change.
+;   - Legacy static mode (no TURN_SECRET):
+;       user=<TURN_USER>:<TURN_PASS>
+;     A single static credential.
+; min-port/max-port define the UDP relay range; external-ip maps LAN->public.
+listening-port=3478
+listening-ip=__LAN_IP__
+relay-ip=__LAN_IP__
+external-ip=__PUBLIC_IP__/__LAN_IP__
+min-port=49160
+max-port=49200
+fingerprint
+__TURN_AUTH__
+realm=__REALM__
+no-tls
+no-dtls
+stale-nonce=600
+user-quota=0
+total-quota=0
+no-cli
+log-file=/var/log/turnserver.log

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa" id="htmlRoot">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title id="pageTitle">ورود | وای‌مکس</title>
+<link rel="stylesheet" href="/assets/login.css?v=3"/>
+<style>
+.lang-toggle {
+  position: fixed;
+  top: 1rem;
+  inset-inline-end: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #161b2a;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+.lang-btn {
+  padding: 0.35rem 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #9aa3b8;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-btn:hover { color: #fff; }
+.lang-btn.active { background: #ff8c42; color: #fff; }
+html[dir=ltr] .lang-toggle { inset-inline-end: auto; inset-inline-start: 1.5rem; }
+</style>
+</head>
+<body class="select-none">
+
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btnFA" onclick="setLang('fa')" type="button">فا</button>
+  <button class="lang-btn" id="btnEN" onclick="setLang('en')" type="button">EN</button>
+</div>
+
+<main class="login-card">
+  <section class="visual-panel" data-purpose="telecom-showcase-panel">
+    <canvas class="canvas-visual" id="networkCanvas"></canvas>
+    <div class="fiber-overlay"></div>
+    <header class="visual-header">
+      <div class="signal-bars">
+        <div class="signal-bars-inner">
+          <span class="signal-bar"></span>
+          <span class="signal-bar"></span>
+          <span class="signal-bar"></span>
+          <span class="signal-bar"></span>
+        </div>
+        <span class="signal-label" data-i18n="signalLabel">SIP / WebRTC Ready</span>
+      </div>
+      <div class="connected-pill">
+        <span class="connected-dot"></span>
+        <span class="connected-label" data-i18n="connectedByDesign">متصل به طراحی</span>
+      </div>
+    </header>
+    <div class="visual-center">
+      <div class="visual-tag" data-i18n="everyConnection">هر ارتباطی مهم است / ۰۱</div>
+      <h1 class="visual-slogan" data-i18n="slogan">
+        هر تماس،<br/>
+        <span class="gradient-text">آغاز یک گفت‌وگوست.</span>
+      </h1>
+      <p class="visual-desc" data-i18n="sloganDesc">تماس‌ها، سوابق و پیگیری‌ها؛ همه‌چیز برای کار روزانه و هوشمند تیم شما اینجاست.</p>
+      <div class="protocol-row">
+        <div class="protocol-pill"><span class="protocol-dot dot-emerald"></span>Cloud DC-01 · 9ms</div>
+        <div class="protocol-pill"><span class="protocol-dot dot-sky"></span>OPUS HD Codec</div>
+        <div class="protocol-pill"><span class="protocol-dot dot-purple"></span>TLS / SRTP Encrypted</div>
+      </div>
+    </div>
+    <footer class="visual-footer">
+      <span class="visual-footer-page">01 / 03</span>
+      <span class="visual-footer-brand">YMAX COMMUNICATIONS</span>
+    </footer>
+  </section>
+
+  <section class="form-panel" data-purpose="auth-credentials-panel">
+    <header class="form-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M5 13a10 10 0 0 1 14 0"></path>
+            <path d="M8.5 16.5a5 5 0 0 1 7 0"></path>
+            <path d="M2 9a15 15 0 0 1 20 0"></path>
+            <circle cx="12" cy="20" r="1.5" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="brand-text">
+          YMAX
+          <span class="brand-sub">CONTACT CENTER</span>
+        </div>
+      </div>
+      <div class="badge-online">
+        <span class="badge-dot"></span>
+        <span class="badge-label" data-i18n="systemOnline">سامانه آنلاین</span>
+      </div>
+    </header>
+
+    <div class="form-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-line"></span>
+        <span data-i18n="breadcrumb">مرکز ارتباطات وای‌مکس</span>
+      </div>
+      <h2 class="form-title" data-i18n="welcome">خوش اومدی به وای‌مکس</h2>
+      <p class="form-subtitle" data-i18n="welcomeSub">برای ادامه، نوع کنسول و اطلاعات ورود رو مشخص کن.</p>
+
+      <div class="role-section">
+        <label class="role-label" data-i18n="roleLabel">نوع پنل دسترسی:</label>
+        <div class="role-switch" id="roleSwitchContainer">
+          <button class="role-btn active" id="operatorTabBtn" onclick="selectConsoleRole('operator')" type="button">
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+            </svg>
+            <span data-i18n="operatorLabel">کنسول اپراتور</span>
+          </button>
+          <button class="role-btn" id="adminTabBtn" onclick="selectConsoleRole('admin')" type="button">
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span data-i18n="adminLabel">کنسول مدیر</span>
+          </button>
+        </div>
+      </div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="field-group">
+          <label class="field-label" for="username" data-i18n="usernameLabel">نام کاربری یا شناسه داخلی</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            <input class="input-field" id="username" name="username" placeholder="نام کاربری خود را وارد کنید" type="text" autocomplete="username"/>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <label class="field-label" for="password" data-i18n="passwordLabel">رمز عبور</label>
+            <a class="field-link" href="#" data-i18n="forgotPassword">فراموشی رمز عبور؟</a>
+          </div>
+          <div class="password-wrap">
+            <span class="input-icon">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                <rect height="11" rx="2" width="18" x="3" y="11"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input class="input-field password-input" id="password" name="password" placeholder="رمز عبور خود را وارد کنید" type="password" autocomplete="current-password"/>
+            <button class="eye-toggle" onclick="togglePassword()" type="button">
+              <svg fill="none" id="eyeIcon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="check-row">
+          <label class="check-label">
+            <input checked class="check-input" type="checkbox"/>
+            <span class="check-text" data-i18n="autoConnect">اتصال خودکار به سافت‌فون (WebRTC)</span>
+          </label>
+          <span class="ext-badge">Ext: 105</span>
+        </div>
+
+        <div style="margin-top:16px">
+          <button class="submit-btn" id="loginSubmitBtn" type="submit">
+            <span id="submitBtnText" data-i18n="submitOperator">ورود به پنل اپراتور</span>
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+              <line x1="5" x2="19" y1="12" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <footer class="form-footer">
+      <span data-i18n="copyright">© وای‌مکس · مرکز ارتباطات و مدیریت VoIP</span>
+      <div class="footer-links">
+        <a href="#" data-i18n="support">پشتیبانی فنی</a>
+        <span>•</span>
+        <a href="#" data-i18n="softphoneGuide">راهنمای سافت‌فون</a>
+      </div>
+    </footer>
+  </section>
+</main>
+
+<script>
+const I18N = {
+  fa: {
+    pageTitle: 'ورود | وای‌مکس',
+    welcome: 'خوش اومدی به وای‌مکس',
+    welcomeSub: 'برای ادامه، نوع کنسول و اطلاعات ورود رو مشخص کن.',
+    roleLabel: 'نوع پنل دسترسی:',
+    operatorLabel: 'کنسول اپراتور',
+    adminLabel: 'کنسول مدیر',
+    usernameLabel: 'نام کاربری یا شناسه داخلی',
+    usernamePlaceholder: 'نام کاربری خود را وارد کنید',
+    passwordLabel: 'رمز عبور',
+    passwordPlaceholder: 'رمز عبور خود را وارد کنید',
+    forgotPassword: 'فراموشی رمز عبور؟',
+    autoConnect: 'اتصال خودکار به سافت‌فون (WebRTC)',
+    submitOperator: 'ورود به پنل اپراتور',
+    submitAdmin: 'ورود به کنسول مدیریت',
+    copyright: '© وای‌مکس · مرکز ارتباطات و مدیریت VoIP',
+    support: 'پشتیبانی فنی',
+    softphoneGuide: 'راهنمای سافت‌فون',
+    systemOnline: 'سامانه آنلاین',
+    breadcrumb: 'مرکز ارتباطات وای‌مکس',
+    slogan: 'هر تماس،<br/><span class="gradient-text">آغاز یک گفت‌وگوست.</span>',
+    sloganDesc: 'تماس‌ها، سوابق و پیگیری‌ها؛ همه‌چیز برای کار روزانه و هوشمند تیم شما اینجاست.',
+    everyConnection: 'هر ارتباطي مهم است / ۰۱',
+    connectedByDesign: 'متصل به طراحی',
+    signalLabel: 'SIP / WebRTC Ready',
+    loginError: 'ورود ناموفق: ',
+  },
+  en: {
+    pageTitle: 'Sign In | YMAX',
+    welcome: 'Welcome to YMAX',
+    welcomeSub: 'Select your console type and sign in to continue.',
+    roleLabel: 'Console Access Type:',
+    operatorLabel: 'Operator Console',
+    adminLabel: 'Admin Console',
+    usernameLabel: 'Username or Internal ID',
+    usernamePlaceholder: 'Enter your username',
+    passwordLabel: 'Password',
+    passwordPlaceholder: 'Enter your password',
+    forgotPassword: 'Forgot password?',
+    autoConnect: 'Auto-connect to Softphone (WebRTC)',
+    submitOperator: 'Sign in to Operator Console',
+    submitAdmin: 'Sign in to Admin Console',
+    copyright: '© YMAX · VoIP Communications & Management Center',
+    support: 'Technical Support',
+    softphoneGuide: 'Softphone Guide',
+    systemOnline: 'System Online',
+    breadcrumb: 'YMAX Communications Hub',
+    slogan: 'Every call,<br/><span class="gradient-text">starts a conversation.</span>',
+    sloganDesc: 'Calls, history, and follow-ups — everything for your team\'s daily work is here.',
+    everyConnection: 'Every Connection Matters / 01',
+    connectedByDesign: 'Connected by Design',
+    signalLabel: 'SIP / WebRTC Ready',
+    loginError: 'Login failed: ',
+  }
+};
+
+let currentLang = localStorage.getItem('cc_lang') || 'fa';
+let currentRole = 'operator';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('cc_lang', lang);
+  const dict = I18N[lang];
+  const htmlEl = document.getElementById('htmlRoot');
+  const dir = lang === 'fa' ? 'rtl' : 'ltr';
+  htmlEl.setAttribute('lang', lang);
+  htmlEl.setAttribute('dir', dir);
+  document.title = dict.pageTitle;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) {
+      if (key === 'slogan') el.innerHTML = dict[key];
+      else el.textContent = dict[key];
+    }
+  });
+  document.getElementById('username').placeholder = dict.usernamePlaceholder;
+  document.getElementById('password').placeholder = dict.passwordPlaceholder;
+  updateSubmitBtnText();
+  document.getElementById('btnFA').classList.toggle('active', lang === 'fa');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  document.body.style.fontFamily = lang === 'en' ? "system-ui, 'Segoe UI', Tahoma, Arial, sans-serif" : "'Vazirmatn', Tahoma, Arial, sans-serif";
+}
+
+function selectConsoleRole(role) {
+  currentRole = role;
+  const op = document.getElementById('operatorTabBtn');
+  const ad = document.getElementById('adminTabBtn');
+  if (role === 'operator') { op.classList.add('active'); ad.classList.remove('active'); }
+  else { ad.classList.add('active'); op.classList.remove('active'); }
+  updateSubmitBtnText();
+}
+
+function updateSubmitBtnText() {
+  const dict = I18N[currentLang];
+  document.getElementById('submitBtnText').textContent = currentRole === 'operator' ? dict.submitOperator : dict.submitAdmin;
+}
+
+function togglePassword() {
+  const pw = document.getElementById('password');
+  const icon = document.getElementById('eyeIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    pw.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginSubmitBtn');
+  const btnText = document.getElementById('submitBtnText');
+  const origText = btnText.textContent;
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  if (!user || !pass) return;
+  btn.disabled = true;
+  btnText.textContent = currentLang === 'fa' ? 'در حال ورود...' : 'Signing in...';
+  fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: user, password: pass, role: currentRole })
+  })
+  .then(r => r.json().then(d => ({ ok: r.ok, data: d })))
+  .then(res => {
+    btn.disabled = false;
+    btnText.textContent = origText;
+    if (!res.ok) throw new Error(res.data.error || 'خطا');
+    localStorage.setItem('cc_token', res.data.token);
+    location.href = currentRole === 'admin' ? '/admin/' : '/operator/';
+  })
+  .catch(err => {
+    btn.disabled = false;
+    btnText.textContent = origText;
+    alert(I18N[currentLang].loginError + err.message);
+  });
+}
+
+(function() {
+  const canvas = document.getElementById('networkCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let width, height, isLTR = false;
+  function resize() {
+    const parent = canvas.parentElement;
+    width = parent.offsetWidth;
+    height = parent.offsetHeight;
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  function checkDir() { isLTR = document.documentElement.getAttribute('dir') === 'ltr'; }
+  checkDir();
+  const fibers = [];
+  for (let i = 0; i < 28; i++) fibers.push({ progress: Math.random(), speed: 0.002 + Math.random() * 0.003, alpha: 0.2 + Math.random() * 0.5, w: 0.8 + Math.random() * 1.5 });
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    const t = Date.now() * 0.001;
+    for (let i = 0; i < 12; i++) {
+      const sy = (height / 12) * i;
+      ctx.beginPath();
+      if (isLTR) { ctx.moveTo(width+50, sy+40); ctx.bezierCurveTo(width*0.65, sy-80, width*0.35, sy+120, -50, sy-20); }
+      else { ctx.moveTo(-50, sy+40); ctx.bezierCurveTo(width*0.35, sy-80, width*0.65, sy+120, width+50, sy-20); }
+      ctx.strokeStyle = 'rgba(234,88,12,0.06)'; ctx.lineWidth = 1; ctx.stroke();
+    }
+    fibers.forEach(function(fiber, idx) {
+      fiber.progress += fiber.speed;
+      if (fiber.progress > 1) fiber.progress = 0;
+      const startY = height * 0.2 + (idx * 18);
+      const endY = height * 0.75 + (idx * 12) + Math.sin(t + idx) * 60;
+      let sX, eX;
+      if (isLTR) { sX = width+100; eX = -100; } else { sX = -100; eX = width+100; }
+      const c1x = isLTR ? width*0.65 : width*0.35;
+      const c2x = isLTR ? width*0.35 : width*0.65;
+      const c1y = startY - 140;
+      const c2y = endY + 100;
+      const p = fiber.progress;
+      ctx.beginPath();
+      ctx.moveTo(sX, startY);
+      ctx.bezierCurveTo(c1x, c1y, c2x, c2y, eX, endY);
+      ctx.strokeStyle = 'rgba(255,140,66,' + (0.12 * fiber.alpha) + ')';
+      ctx.lineWidth = fiber.w;
+      ctx.stroke();
+      const bx = Math.pow(1-p,3)*sX + 3*Math.pow(1-p,2)*p*c1x + 3*(1-p)*Math.pow(p,2)*c2x + Math.pow(p,3)*eX;
+      const by = Math.pow(1-p,3)*startY + 3*Math.pow(1-p,2)*p*c1y + 3*(1-p)*Math.pow(p,2)*c2y + Math.pow(p,3)*endY;
+      const grad = ctx.createRadialGradient(bx, by, 0, bx, by, 8);
+      grad.addColorStop(0, 'rgba(255,247,237,1)');
+      grad.addColorStop(0.3, 'rgba(255,140,66,0.8)');
+      grad.addColorStop(1, 'rgba(255,140,66,0)');
+      ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI*2);
+      ctx.fillStyle = grad; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  setInterval(checkDir, 1000);
+  draw();
+})();
+
+setLang(currentLang);
+</script>
+</body>
+</html>

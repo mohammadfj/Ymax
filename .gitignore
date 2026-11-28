@@ -5,11 +5,13 @@ acme.json
 *.json
 !CHANGELOG*.*
 
-# scratch scripts & data
+# scratch scripts & data (keep tracked project scripts)
 *.py
 *.sh
+!pbx_reload.sh
 *.sql
 *.conf
+!turnserver.conf.tmpl
 
 # tooling / caches
 node_modules/
