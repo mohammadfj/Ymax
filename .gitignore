@@ -9,9 +9,11 @@ acme.json
 *.py
 *.sh
 !pbx_reload.sh
+!tools/pg2mariadb.py
 *.sql
 *.conf
 !turnserver.conf.tmpl
+!tools/rls_ddl.sql
 
 # tooling / caches
 node_modules/
