@@ -71,6 +71,6 @@ await q("SELECT set_config('app.tenant_id', $1, true)", [String(tenantId)]);
 
 ## 6. Approval
 
-- [ ] PO approval for RLS design
-- [ ] PO approval for `SET LOCAL app.tenant_id` in connection pool
-- [ ] Test plan for cross-tenant isolation
+- [x] PO approval for RLS design
+- [x] PO approval for `SET LOCAL app.tenant_id` in connection pool
+- [x] Test plan for cross-tenant isolation

@@ -9,7 +9,7 @@
 | R5 | Two turnserver PIDs on :3478 | Medium | OBSERVED | **RESOLVED** | Single instance confirmed 2026-11-28 | PID 22666 only; stray killed |
 | R6 | `|| 1` tenant fail-open | Medium | OBSERVED | **RESOLVED** | 2026-11-28: `runtime.js:33` (`tenantOfUid`) + `runtime.js:134` (`live.tenantOf`) no longer fall back to tenant 1 — verified live, app restarted healthy | P0-4 DM check + fail-closed tenant lookup; unauthenticated/unresolvable callers now get no tenant room |
 | R7 | `;` comment bug in rendered coturn config | Medium | OBSERVED | **RESOLVED** | Clean config verified 2026-11-28 | Template uses `#` comments |
-| R8 | MariaDB standby absent | Medium | OBSERVED | ACKNOWLEDGED | No `db` container | PG retained; MariaDB removed from fallback path |
+| R8 | MariaDB standby absent | Medium | OBSERVED | MITIGATION-PLANNED | No `db` container; PG only | MARIADB-BACKUP-PLAN.md: PG → MariaDB mirror nightly; standby read-only safety net, never primary; blocked on Docker Hub auth on host |
 | R9 | PG restore feasibility untested | Medium | UNKNOWN | **RESOLVED** | `pg_dump` + template restore 2026-11-28 | Restore proven; nightly backup healthy |
 | R10 | CentOS 7.9 EOL | Medium | DOCUMENTED | OPEN | No security patches | Long-term OS migration assessment (out of scope) |
 | R11 | `max_contacts=1` limits multi-device operator | Low | DOCUMENTED | OPEN | PBX config | PO to confirm |
