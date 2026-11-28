@@ -20,7 +20,7 @@ Access route: Tailscale `root@100.112.160.17` → host `192.168.250.42`. Direct 
 | Nginx container | `callcenter-web-nginx-1`, Up 33h, healthy | OBSERVED |
 | Turn container | `callcenter-web-turn-1`, Up 8h | OBSERVED |
 | SIP Lab container | `ymax-sip-lab-asterisk`, Up 6h (isolated from prod) | OBSERVED |
-| MariaDB standby `callcenter-web-db-1` | **ABSENT from `docker ps`** (CONFLICTS with AGENT-READABLE-STATUS §1) | OBSERVED |
+| MariaDB standby `callcenter-web-db-1` | **ABSENT** — confirmed absent on 2026-11-28 (`docker ps -a | grep -i db` empty); PG only | OBSERVED |
 | Health API | `{"status":"ok","service":"callcenter","version":"3.0.1","db":"ok"}` | OBSERVED |
 | App log | clean; `[bootstrap] completed successfully` | OBSERVED |
 | Active calls | `core show channels` → 0 active | OBSERVED |

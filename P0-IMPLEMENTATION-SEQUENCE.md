@@ -15,7 +15,7 @@ Mode: **execution complete** — all P0 items verified fixed. Every change was b
 | 5 | TURN auth retest + single-instance | **DONE** — `lt-cred-mech` removed, `turnutils_uclient -W` PASS | coturn conf backed up | turn restart |
 | 6 | Separate RTP vs TURN port ranges | **DONE** — RTP 50000-51000, TURN relay 49160-49200 | rtp.conf backed up | pbx restart |
 | 7 | P0-4 Socket.IO fail-open hardening | **DONE** — DM peer tenant check added; JWT middleware fail-closed | runtime.js backed up | app restart |
-| 8 | Exit criteria + CHANGELOG + PO sign-off | **IN PROGRESS** — docs updated, awaiting PO | — | no |
+| 8 | Exit criteria + CHANGELOG + PO sign-off | **DONE** — CHANGELOG.md merged with [3.0.2] + R6; docs committed to git repo (Ymax) | — | no |
 
 ---
 

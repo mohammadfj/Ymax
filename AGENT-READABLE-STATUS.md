@@ -22,7 +22,7 @@
 | Driver فعال | PostgreSQL ۱۶ (۱۲۷.۰.۰.۱:۵۴۳۲) | ✅ فعال |
 | `.env` | `CC_DB_DRIVER=pg`، `DB_PORT=۵۴۳۲` | ست شده |
 | MariaDB کانتینر | حذف از compose، پورت ۳۳۰۶ DOWN | ✅ حذف شده |
-| MariaDB standby | `callcenter-web-db-1` | Up ~۱ساعت (healthy) — بازیابی‌شده توسط ساب‌ایجنت v2-migration-prep |
+| MariaDB standby | absent | حذف شده (CONFIRMED 2026-11-28) — PG only |
 | PG systemd | `/etc/systemd/system/postgresql-16.service` | enabled + started |
 | migrations ۰۰۱/۰۰۲/۰۰۳ | tenants + tenant_id + seed | ثبت شده در جدول migrations |
 
@@ -101,7 +101,9 @@ GET http://۱۹۲.۱۶۸.۲۵۰.۴۲:۳۰۰۶/health
 
 ---
 
-## ۵. P0های امنیتی (pending — تأکید PO)
+## ۵. P0های امنیتی — ✅ همه فیکس و تستی (2026-11-28)
+
+> **Status: ALL RESOLVED.** P0-1..4 verified live on 192.168.250.42 2026-11-28. See `P0-IMPLEMENTATION-SEQUENCE.md` (verification checklist, all PASS) and `PRODUCTION-RISK-REGISTER.md`. Below is the original finding list for traceability.
 
 | # | مشکل | شدت | جایگاه | اقدام |
 |---|------|------|--------|------|

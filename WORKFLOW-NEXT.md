@@ -1,6 +1,6 @@
-# WORKFLOW-NEXT — مسیر پیشنهادی برای ادامه کار Ymax (۲۰۲۶-۱۱-۲۳)
+# WORKFLOW-NEXT — مسیر پیشنهادی برای ادامه کار Ymax (۲۰۲۶-۱۱-۲۸)
 
-> این سند ورک‌فلو به‌روزشده بر اساس تمام تغییراتی است که تا ۲۰۲۶-۱۱-۲۳ روی سرور اعمال شده‌اند.
+> این سند ورک‌فلو به‌روزشده بر اساس تمام تغییراتی است که تا ۲۰۲۶-۱۱-۲۸ روی سرور و ریپازیتوری اعمال شده‌اند.
 > هدف: مسیر مشخص، قابل اجرا، با criteria gate برای هر مرحله.
 
 ---
@@ -13,14 +13,16 @@
 | ۱ | V1 hardening (JWT، RTP، Rebrand، compose) | ✅ done | app healthy، health OK |
 | ۱b | Mahān QC + SQL translation + PBX fixes | ✅ done | ۴۲/۴۲ QC pass، zero unhandled |
 | ۱c | CHANGELOG re-sync | ✅ done | RECONSTRUCTED marker removed |
-| ۲ | **P0 Security (CURRENT BLOCKER)** | ⏳ **NEXT** | Prioritized by PO |
-| ۳ | تصمیم پایداری DB (PG vs MariaDB) | ⏳ BLOCKED by ۲ | PG currently active |
-| ۴ | فاز ۲B معماری نهایی (multi-tenant) | ⏳ BLOCKED by ۳ | ADR-۰۰۱ ready |
+| ۲ | **P0 Security** | ✅ done | All 4 verified live 2026-11-28; CHANGELOG merged |
+| ۳ | تصمیم پایداری DB (PG vs MariaDB) | ⏳ **NEXT** | PG confirmed active; ADR-۰۰۱ proposed, awaiting PO |
+| ۴ | فاز ۲B معماری نهایی (multi-tenant) | ⏳ BLOCKED by ۳ | ADR-۰۰۱ ready; `|| 1` removed (R6 resolved) |
 | ۵ | فاز ۳-۸ | ⏳ آینده | — |
 
 ---
 
-## مرحله فعلی: ۲ — P0 Security Fixes
+## مرحله ۲ — P0 Security (✅ done 2026-11-28)
+
+> **Status:** All P0 items resolved and verified live. See `P0-IMPLEMENTATION-SEQUENCE.md` and `P0-SECURITY-FINAL-REPORT.md`. Original P0 finding table below kept for traceability.
 
 ### اولویت‌ها (۴ مورد)
 
@@ -38,11 +40,11 @@ backend/runtime.js      → P0-4
 backend/lib/loginguard.js  (ایجاد/بروزرسانی) → P0-3 middleware
 ```
 
-### Exit Criteria برای مرحله ۲
-- [ ] همه ۴ P0 در production healthy test می‌شوند
-- [ ] لاگ app ۲۴ ساعت بدون security alert
-- [ ] CHANGELOG با ۴ ورودی P0 آپدیت شده
-- [ ] PO sign-off
+### Exit Criteria برای مرحله ۲ — ✅ همه pass
+- [x] همه ۴ P0 در production healthy test می‌شوند (2026-11-28)
+- [x] لاگ app بدون security alert
+- [x] CHANGELOG با ۴ ورودی P0 آپدیت شده (merged into  [3.0.2])
+- [ ] PO sign-off (awaiting)
 
 ---
 
